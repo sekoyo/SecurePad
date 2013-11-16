@@ -92,5 +92,4 @@ void CryptDoc(CryptAction action);
 void CryptSelection(CryptAction action);
 void AboutDlg();
 
-
 #endif //PLUGINDEFINITION_H

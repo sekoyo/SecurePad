@@ -185,4 +185,3 @@ inline unsigned int CBlowFish::F(unsigned int ui)
 }
 
 #endif // __BLOWFISH_H__
-

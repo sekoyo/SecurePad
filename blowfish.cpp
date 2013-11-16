@@ -608,4 +608,3 @@ void CBlowFish::Decrypt(const unsigned char* in, unsigned char* out, size_t n, i
 		}
 	}
 }
-

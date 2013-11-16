@@ -10,8 +10,3 @@ SecurePad can be used, among other things for:
 - Sending sensitive information across the internet such as through email.
 
 SecurePad uses a powerful and secure cryption algorithm, though of course it is always advised that you use a reasonably complex password. It also means you should be careful because there is no way to recover your information if you forget the key you used!
-
-Maintenance
-===========
-
-I no longer use Windows so I am making this opensource in the hope that someone updates it. SecurePad has had more than 100,000 downloads so I hope that someone updates it for the latest Notepad++. It should be a case of updating the unmodified plugin files and possibly `PluginDefinition.cpp`.
