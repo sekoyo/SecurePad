@@ -17,7 +17,7 @@ Changelog
 v2.2
 ----
 
-Recompiled with latest plugin files for compatibility with latest Notepad++
+Recompiled with latest plugin files for compatibility with latest Notepad++ (6.5.1). Note that the compatibility break may have occured before this, I have only tested that it works with this version though it is likely to work with lower versions of 6.5 too.
 
 v2.1
 ----
