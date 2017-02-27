@@ -8,14 +8,12 @@ environment:
     - PlatformToolset: v140_xp
 
 platform:
-    #- x64
+    - x64
     - Win32
 
 configuration:
-    - Unicode Debug
-    - Unicode Release
-    - ANSI Debug
-    - ANSI Release
+    - Debug
+    - Release
 
 
 install:
@@ -29,28 +27,28 @@ build:
 
 build_script:
     - cd "%APPVEYOR_BUILD_FOLDER%"
-    - msbuild NppPluginTemplate.sln /m /p:configuration="%configuration%" /p:platform="%platform%" /p:PlatformToolset="%PlatformToolset%"
+    - msbuild NppPluginTemplate.vcxproj /m /p:configuration="%configuration%" /p:platform="%platform%" /p:PlatformToolset="%PlatformToolset%"
 
 after_build:
     - cd "%APPVEYOR_BUILD_FOLDER%"
     - ps: >-
 
-        if ($env:PLATFORM -eq "x64") {
-            #Push-AppveyorArtifact "bin\$env:PLATFORM\$env:CONFIGURATION\SecurePad.dll" -FileName SecurePad.dll
+        if ($env:PLATFORM -eq "x64" -and $env:CONFIGURATION -eq "Release") {
+            Push-AppveyorArtifact "bin64\SecurePad.dll" -FileName SecurePad.dll
         }
 
-        if ($env:PLATFORM -eq "Win32" ) {
-            #Push-AppveyorArtifact "bin\$env:CONFIGURATION\SecurePad.dll" -FileName SecurePad.dll
+        if ($env:PLATFORM -eq "Win32" -and $env:CONFIGURATION -eq "Release") {
+            Push-AppveyorArtifact "bin\SecurePad.dll" -FileName SecurePad.dll
         }
 
-        if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Unicode Release" -and $env:PLATFORMTOOLSET -eq "v120_xp") {
+        if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Release" -and $env:PLATFORMTOOLSET -eq "v120_xp") {
             if($env:PLATFORM -eq "x64"){
             $ZipFileName = "SecurePad_$($env:APPVEYOR_REPO_TAG_NAME)_x64.zip"
-            7z a $ZipFileName bin\$env:PLATFORM\$env:CONFIGURATION\SecurePad.dll
+            7z a $ZipFileName .\bin64\SecurePad.dll
             }
             if($env:PLATFORM -eq "Win32"){
             $ZipFileName = "SecurePad_$($env:APPVEYOR_REPO_TAG_NAME)_x86.zip"
-            7z a $ZipFileName bin\$env:CONFIGURATION\SecurePad.dll
+            7z a $ZipFileName .\bin\SecurePad.dll
             }
         }
 
