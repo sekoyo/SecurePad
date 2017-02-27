@@ -170,8 +170,14 @@ void CryptDoc(CryptAction action)
     SendMessage(hCurrentEditView, SCI_SETTEXT, 0, (LPARAM)textBufOut);
 
     // Cleanup
-    VirtualFree(textBuf, textLength, MEM_RELEASE);
-    VirtualFree(textBufOut, textLengthOut, MEM_RELEASE);
+    if(textBuf)
+    {
+        VirtualFree(textBuf, 0, MEM_RELEASE);
+    }
+    if (textBufOut)
+    {
+        VirtualFree(textBufOut, 0, MEM_RELEASE);
+    }
 }
 
 // SCI haven't updated SCI_GETTEXTRANGE to be unicode yet (unicode is very "new")
@@ -236,8 +242,14 @@ void CryptSelection(CryptAction action)
     SendMessage(hCurrentEditView, SCI_REPLACESEL, 0, (LPARAM)textBufOut);
 
     // Cleanup
-    VirtualFree(textBuf, textLength, MEM_RELEASE);
-    VirtualFree(textBufOut, textLengthOut, MEM_RELEASE);
+    if (textBuf)
+    {
+        VirtualFree(textBuf, 0, MEM_RELEASE);
+    }
+    if (textBufOut)
+    {
+        VirtualFree(textBufOut, 0, MEM_RELEASE);
+    }
 }
 
 void AboutDlg()
@@ -249,7 +261,7 @@ void AboutDlg()
 //  Dialog for key entry
 // ===============================================
 
-LRESULT CALLBACK DlgProcCryptKey(HWND hWndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK DlgProcCryptKey(HWND hWndDlg, UINT msg, WPARAM wParam, LPARAM /*lParam*/)
 {
     switch(msg)
     {
@@ -270,8 +282,8 @@ LRESULT CALLBACK DlgProcCryptKey(HWND hWndDlg, UINT msg, WPARAM wParam, LPARAM l
         {
             if(LOWORD(wParam) == IDOK)
             {
-                TCHAR box1[MAX_CRYPT_KEY];
-                TCHAR box2[MAX_CRYPT_KEY];
+                TCHAR box1[MAX_CRYPT_KEY] = { 0 };
+                TCHAR box2[MAX_CRYPT_KEY] = { 0 };
                 LRESULT keyLen = 0;
 
                 SendMessage(GetDlgItem(hWndDlg, IDC_EDIT1), WM_GETTEXT, sizeof(box1), (LPARAM)box1);
@@ -294,7 +306,7 @@ LRESULT CALLBACK DlgProcCryptKey(HWND hWndDlg, UINT msg, WPARAM wParam, LPARAM l
                 if(keyLen > MAX_CRYPT_KEY)
                 {
                     TCHAR buf[128];
-                    _stprintf(buf, TEXT("The key was too long! (key=%d, max=%d)\0"), keyLen, MAX_CRYPT_KEY);
+                    _stprintf(buf, TEXT("The key was too long! (key=%Id, max=%d)\0"), keyLen, MAX_CRYPT_KEY);
                     MessageBox(nppData._nppHandle, buf, TEXT("Please try again"), MB_OK);
                     break;
                 }
@@ -302,7 +314,7 @@ LRESULT CALLBACK DlgProcCryptKey(HWND hWndDlg, UINT msg, WPARAM wParam, LPARAM l
                 if(keyLen < MIN_CRYPT_KEY)
                 {
                     TCHAR buf[128];
-                    _stprintf(buf, TEXT("The key was too short! (key=%d, min=%d)\0"), keyLen, MIN_CRYPT_KEY);
+                    _stprintf(buf, TEXT("The key was too short! (key=%Id, min=%d)\0"), keyLen, MIN_CRYPT_KEY);
                     MessageBox(nppData._nppHandle, buf, TEXT("Please try again"), MB_OK);
                     break;
                 }
@@ -424,8 +436,8 @@ std::wstring widen(const std::string& str)
 std::string narrow(const std::wstring& str)
 {
 	std::ostringstream stm;
-	const std::ctype<char>& ctfacet =
-		std::use_facet< std::ctype<char> >(stm.getloc());
+	const std::ctype<wchar_t>& ctfacet =
+		std::use_facet< std::ctype<wchar_t> >(stm.getloc());
     for( size_t i=0 ; i<str.size() ; ++i ) 
                   stm << ctfacet.narrow( str[i], 0 ) ;
     return stm.str() ;

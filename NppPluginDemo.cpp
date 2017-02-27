@@ -21,9 +21,7 @@ extern FuncItem funcItem[nbFunc];
 extern NppData nppData;
 
 
-BOOL APIENTRY DllMain( HANDLE hModule, 
-                       DWORD  reasonForCall, 
-                       LPVOID lpReserved )
+BOOL APIENTRY DllMain(HANDLE hModule, DWORD  reasonForCall, LPVOID /*lpReserved*/)
 {
     switch (reasonForCall)
     {
@@ -32,7 +30,6 @@ BOOL APIENTRY DllMain( HANDLE hModule,
         break;
 
       case DLL_PROCESS_DETACH:
-		commandMenuCleanUp();
         pluginCleanUp();
         break;
 
@@ -67,6 +64,17 @@ extern "C" __declspec(dllexport) FuncItem * getFuncsArray(int *nbF)
 
 extern "C" __declspec(dllexport) void beNotified(SCNotification *notifyCode)
 {
+	switch (notifyCode->nmhdr.code) 
+	{
+		case NPPN_SHUTDOWN:
+		{
+			commandMenuCleanUp();
+		}
+		break;
+
+		default:
+			return;
+	}
 }
 
 
@@ -75,7 +83,7 @@ extern "C" __declspec(dllexport) void beNotified(SCNotification *notifyCode)
 // Please let me know if you need to access to some messages :
 // http://sourceforge.net/forum/forum.php?forum_id=482781
 //
-extern "C" __declspec(dllexport) LRESULT messageProc(UINT Message, WPARAM wParam, LPARAM lParam)
+extern "C" __declspec(dllexport) LRESULT messageProc(UINT /*Message*/, WPARAM /*wParam*/, LPARAM /*lParam*/)
 {/*
 	if (Message == WM_MOVE)
 	{
