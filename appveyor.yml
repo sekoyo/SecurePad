@@ -1,15 +1,15 @@
-version: 2.2.{build}
-image: Visual Studio 2017
+version: 2.3.{build}
+image: Visual Studio 2022
 
 
 environment:
   matrix:
-    - PlatformToolset: v140_xp
-    - PlatformToolset: v141_xp
+    - PlatformToolset: v143
 
 platform:
     - x64
     - Win32
+    - arm64
 
 configuration:
     - Debug
@@ -23,8 +23,10 @@ install:
     - if "%platform%"=="Win32" set archi=x86
     - if "%platform%"=="Win32" set platform_input=Win32
 
-    - if "%PlatformToolset%"=="v140_xp" call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" %archi%
-    - if "%PlatformToolset%"=="v141_xp" call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" %archi%
+    - if "%platform%"=="arm64" set archi=amd64_arm64
+    - if "%platform%"=="arm64" set platform_input=arm64
+
+    - if "%PlatformToolset%"=="v143" call "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" %archi%
 
 build_script:
     - cd "%APPVEYOR_BUILD_FOLDER%"
@@ -42,14 +44,22 @@ after_build:
             Push-AppveyorArtifact "bin\SecurePad.dll" -FileName SecurePad.dll
         }
 
-        if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Release" -and $env:PLATFORMTOOLSET -eq "v140_xp") {
+        if ($env:PLATFORM_INPUT -eq "arm64" -and $env:CONFIGURATION -eq "Release") {
+            Push-AppveyorArtifact "arm64\SecurePad.dll" -FileName SecurePad.dll
+        }
+
+        if ($($env:APPVEYOR_REPO_TAG) -eq "true" -and $env:CONFIGURATION -eq "Release" -and $env:PLATFORMTOOLSET -eq "v143") {
             if($env:PLATFORM_INPUT -eq "x64"){
-            $ZipFileName = "SecurePad_$($env:APPVEYOR_REPO_TAG_NAME)_x64.zip"
-            7z a $ZipFileName .\bin64\SecurePad.dll
+                $ZipFileName = "SecurePad_$($env:APPVEYOR_REPO_TAG_NAME)_$($env:PLATFORM_INPUT).zip"
+                7z a $ZipFileName .\bin64\SecurePad.dll
             }
             if($env:PLATFORM_INPUT -eq "Win32"){
-            $ZipFileName = "SecurePad_$($env:APPVEYOR_REPO_TAG_NAME)_x86.zip"
-            7z a $ZipFileName .\bin\SecurePad.dll
+                $ZipFileName = "SecurePad_$($env:APPVEYOR_REPO_TAG_NAME)_$($env:PLATFORM_INPUT).zip"
+                7z a $ZipFileName .\bin\SecurePad.dll
+            }
+            if($env:PLATFORM_INPUT -eq "arm64"){
+                $ZipFileName = "SecurePad_$($env:APPVEYOR_REPO_TAG_NAME)_$($env:PLATFORM_INPUT).zip"
+                7z a $ZipFileName .\arm64\SecurePad.dll
             }
         }
 
@@ -67,5 +77,5 @@ deploy:
     force_update: true
     on:
         appveyor_repo_tag: true
-        PlatformToolset: v140_xp
+        PlatformToolset: v143
         configuration: Release
