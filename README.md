@@ -14,6 +14,13 @@ SecurePad uses a powerful and secure cryption algorithm (, see https://en.wikipe
 Changelog
 =========
 
+v2.3
+----
+
+Recompiled with latest plugin files for compatibility with latest Notepad++ (8.3).
+Added arm64 version
+Updated to VS2022
+
 v2.2
 ----
 
