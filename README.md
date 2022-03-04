@@ -14,6 +14,11 @@ SecurePad uses a powerful and secure cryption algorithm (, see https://en.wikipe
 Changelog
 =========
 
+v2.4
+----
+Fixed issue #13, regression form PR #12, completely replacing functionality with just the npp template code
+Adpated to size_t for documents greater 2GB
+
 v2.3
 ----
 

@@ -21,14 +21,27 @@
 //
 // All difinitions of plugin interface
 //
+#include <locale>
+#include <iostream>
+#include <string>
+#include <sstream>
+
+#include <stdio.h>
+#include <tchar.h>
+#include <string.h>
 #include "PluginInterface.h"
+#include "blowfish.h"
+#include "resource1.h"
+
+constexpr auto MAX_CRYPT_KEY = 56;
+constexpr auto MIN_CRYPT_KEY = 1;
 
 //-------------------------------------//
 //-- STEP 1. DEFINE YOUR PLUGIN NAME --//
 //-------------------------------------//
 // Here define your plugin name
 //
-const TCHAR NPP_PLUGIN_NAME[] = TEXT("Notepad++ plugin template");
+const TCHAR NPP_PLUGIN_NAME[] = TEXT("SecurePad");
 
 //-----------------------------------------------//
 //-- STEP 2. DEFINE YOUR PLUGIN COMMAND NUMBER --//
@@ -36,7 +49,7 @@ const TCHAR NPP_PLUGIN_NAME[] = TEXT("Notepad++ plugin template");
 //
 // Here define the number of your plugin commands
 //
-const int nbFunc = 2;
+const int nbFunc = 5;
 
 
 //
@@ -62,7 +75,7 @@ void commandMenuInit();
 void commandMenuCleanUp();
 
 //
-// Function which sets your command 
+// Function which sets your command
 //
 bool setCommand(size_t index, TCHAR *cmdName, PFUNCPLUGINCMD pFunc, ShortcutKey *sk = NULL, bool check0nInit = false);
 
@@ -70,7 +83,13 @@ bool setCommand(size_t index, TCHAR *cmdName, PFUNCPLUGINCMD pFunc, ShortcutKey 
 //
 // Your plugin command functions
 //
-void hello();
-void helloDlg();
+enum class CryptAction {
+    Encrypt,
+    Decrypt
+};
+
+void CryptDoc(CryptAction action);
+void CryptSelection(CryptAction action);
+void AboutDlg();
 
 #endif //PLUGINDEFINITION_H
